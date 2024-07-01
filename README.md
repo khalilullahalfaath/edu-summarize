@@ -3,16 +3,19 @@
 ## How to install
 
 Note that we've provided batch script so you only have to run it to use the app (only works on Windows)
+
 `
 setup.bat
 `
 
 then acctivate the env by
+
 `
 conda activate notesum_env
 `
 
 finally, run the streamlit apps
+
 `
 streamlit run main.py
 `
