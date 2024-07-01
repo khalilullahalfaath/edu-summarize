@@ -1,2 +1,4 @@
 streamlit
-- e.
+pillow
+opencv-python-headless
+easyocr
