@@ -6,6 +6,8 @@ import numpy as np
 from PIL import Image
 from dotenv import load_dotenv
 import os
+import requests
+from transformers import AutoTokenizer
 
 # load env varibles
 load_dotenv()
@@ -17,9 +19,18 @@ key = os.getenv("AZURE_API_KEY")
 from azure.ai.textanalytics import TextAnalyticsClient
 from azure.core.credentials import AzureKeyCredential
 
+# # hugging face
+# hf_api_key = os.getenv("HUGGING_FACE_API_KEY")
+# hf_api_url = "https://api-inference.huggingface.co/models/meta-llama/Llama-2-7b-chat-hf"
+
+# initializers
+# initialize azure
 text_analytics_client = TextAnalyticsClient(
     endpoint=endpoint, credential=AzureKeyCredential(key)
 )
+
+# Initialize the tokenizer
+# tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-chat-hf")
 
 
 # Initialize the OCR reader
