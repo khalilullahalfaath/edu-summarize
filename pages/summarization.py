@@ -6,7 +6,7 @@ import numpy as np
 from PIL import Image
 
 # Initialize the OCR reader
-reader = easyocr.Reader(["id"], gpu=False)  # 'id' : indonesian
+reader = easyocr.Reader(["id","en"], gpu=False)  # 'id' : indonesian
 
 
 def preprocess_image(image):
