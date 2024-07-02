@@ -46,7 +46,12 @@ conda install pytorch torchvision cpuonly -c pytorch
 pip install -r requirements.txt
 `
 
-6. run the streamlit app
+6. Create your env files
+    6a. First copy `.env.template`
+    6b. Rename it to `.env`
+    6c. Write down your azure api key and enpoint correspondingly in the `.env`
+
+7. run the streamlit app
 `
 streamlit run main.py
 `
