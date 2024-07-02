@@ -4,6 +4,23 @@ import easyocr
 import cv2
 import numpy as np
 from PIL import Image
+from dotenv import load_dotenv
+import os
+
+# load env varibles
+load_dotenv()
+
+# get credentials
+endpoint = os.getenv("AZURE_ENDPOINT")
+key = os.getenv("AZURE_API_KEY")
+
+from azure.ai.textanalytics import TextAnalyticsClient
+from azure.core.credentials import AzureKeyCredential
+
+text_analytics_client = TextAnalyticsClient(
+    endpoint=endpoint, credential=AzureKeyCredential(key)
+)
+
 
 # Initialize the OCR reader
 reader = easyocr.Reader(["id", "en"], gpu=False)  # 'id' : indonesian
@@ -28,7 +45,18 @@ def extract_text_from_result(result):
 
 
 def summarize_text(text, subject):
-    return f"This is a summary of your {subject} notes: " + text[:100] + "..."
+    try:
+        document = [text]
+        poller = text_analytics_client.begin_extract_summary(document)
+        extract_summary_results = poller.result()
+        for result in extract_summary_results:
+            if result.kind == "ExtractiveSummarization":
+                summary = " ".join([sentence.text for sentence in result.sentences])
+                return f"Summary of your {subject} notes: {summary}"
+            elif result.is_error is True:
+                return f"Error: {result.error.message}"
+    except Exception as err:
+        return f"An error occurred: {str(err)}"
 
 
 def show_summarization():
