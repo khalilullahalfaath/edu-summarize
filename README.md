@@ -37,7 +37,7 @@ conda activate {your_env_name}
 
 4. IMPORTANT! install numpy and pytorch first using conda
 `
-conda install numpy==1.23.5
+conda install numpy==1.26.4
 conda install pytorch torchvision cpuonly -c pytorch
 `
 
