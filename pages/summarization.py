@@ -6,7 +6,7 @@ import numpy as np
 from PIL import Image
 
 # Initialize the OCR reader
-reader = easyocr.Reader(["id","en"], gpu=False)  # 'id' : indonesian
+reader = easyocr.Reader(["id", "en"], gpu=False)  # 'id' : indonesian
 
 
 def preprocess_image(image):
@@ -34,19 +34,20 @@ def summarize_text(text, subject):
 def show_summarization():
     st.title("NoteSum - Note Summarization")
 
-    uploaded_file = st.file_uploader(
-        "Choose your notes file", type=["txt", "jpg", "jpeg", "png"]
+    input_method = st.radio(
+        "Choose input method", ("Upload image for OCR", "Input text directly")
     )
 
     subject = st.selectbox(
         "Select your subject", ["Math", "Science", "History", "Literature", "Other"]
     )
 
-    if uploaded_file is not None:
-        if uploaded_file.type == "text/plain":
-            stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
-            notes_text = stringio.read()
-        elif uploaded_file.type.startswith("image"):
+    if input_method == "Upload image for OCR":
+        uploaded_file = st.file_uploader(
+            "Choose your notes file", type=["jpg", "jpeg", "png"]
+        )
+
+        if uploaded_file is not None:
             image = Image.open(uploaded_file)
             image_np = np.array(image)
 
@@ -55,13 +56,14 @@ def show_summarization():
             with st.spinner("Processing image..."):
                 result = read_text(image_np)
                 notes_text = extract_text_from_result(result)
-        else:
-            st.error("Unsupported file type. Please upload a txt or image file.")
-            return
 
-        st.write("Extracted Text:")
-        st.text_area("", notes_text, height=200)
+            st.write("Extracted Text:")
+            st.text_area("", notes_text, height=200)
 
+    else:  # Input text directly
+        notes_text = st.text_area("Enter your notes or article text here:", height=300)
+
+    if notes_text:
         if st.button("Summarize"):
             summary = summarize_text(notes_text, subject)
 
