@@ -42,6 +42,8 @@ def show_summarization():
         "Select your subject", ["Math", "Science", "History", "Literature", "Other"]
     )
 
+    notes_text = ""
+
     if input_method == "Upload image for OCR":
         uploaded_file = st.file_uploader(
             "Choose your notes file", type=["jpg", "jpeg", "png"]
