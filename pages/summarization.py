@@ -499,12 +499,7 @@ def show_summarization():
                 continue
 
             key = f"question_{i}"
-            user_answer = st.radio(
-                "Your answer:",
-                options,
-                key=key,
-                index=0,  # Always start with the first option selected
-            )
+            user_answer = st.radio("Your answer:", options, key=key, index=0)
             q["user_answer"] = user_answer
             st.write("---")
 
@@ -520,6 +515,17 @@ def show_summarization():
                 st.write(f"Answer / Jawaban: {card['answer']}")
 
     if st.session_state.get("quiz_submitted", False):
+        st.write("Quiz Results:")
+        for i, q in enumerate(st.session_state.quiz):
+            st.write(f"Q{i+1}: {q['question']}")
+            st.write(f"Your answer: {q['user_answer']}")
+            st.write(f"Correct answer: {q['correct_answer']}")
+            if q["user_answer"] == q["correct_answer"]:
+                st.success("Correct!")
+            else:
+                st.error("Incorrect")
+            st.write("---")
+
         score, correct_answers, total_questions = calculate_score(st.session_state.quiz)
         if language == "English":
             st.write(f"Your overall score: {score:.2f}%")
