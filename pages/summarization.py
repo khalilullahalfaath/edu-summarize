@@ -449,8 +449,6 @@ def show_summarization():
                         st.session_state.quiz = generate_quiz(
                             notes_text, language=language
                         )
-                        st.write("Debug: Quiz structure")
-                        st.write(st.session_state.quiz)
                     st.experimental_rerun()
                 else:
                     if language == "English":
