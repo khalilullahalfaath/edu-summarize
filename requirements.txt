@@ -4,5 +4,6 @@ opencv-python-headless
 easyocr
 python-dotenv
 azure-ai-textanalytics==5.3.0
-transformers
-request
+openai
+pandas
+plotly
