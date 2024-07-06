@@ -1,6 +1,6 @@
 import streamlit as st
 from pages.onboarding import show_onboarding
-from pages.summarization import show_summarization
+from pages import show_summarization
 
 
 def main():
