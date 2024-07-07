@@ -1,7 +1,5 @@
 import streamlit as st
 from utils.localizer import load_bundle
-from PIL import Image
-import os
 
 
 def show_onboarding():
@@ -13,21 +11,13 @@ def show_onboarding():
     lang_dict = load_bundle(lang_options[locale])
 
     # Main content
-    st.title(f"CaDas (Catatan Cerdas) 📚✏️")
+    st.title("CaDas (Catatan Cerdas) 📚✏️")
     st.subheader(lang_dict["sub_title"])
 
-    # Description in a colored box
-    st.markdown(
-        f"""
-    <div style="background-color: #E3F2FD; padding: 20px; border-radius: 10px;">
-        <p>{lang_dict["desc"]}</p>
-    </div>
-    """,
-        unsafe_allow_html=True,
-    )
+    # Description in a box
+    st.info(lang_dict["desc"])
 
-    # Features in two columns
-
+    # Features and Benefits in columns
     col1, col2 = st.columns(2)
 
     with col1:
@@ -49,17 +39,17 @@ def show_onboarding():
             lang_dict["benefits_3"],
         ]
         for benefit in benefits:
-            st.markdown(f"{benefit}")
+            st.markdown(f"- {benefit}")
 
     # Call to action
     st.markdown("---")
     st.markdown(f"## {lang_dict['ready']}")
 
-    # Button with custom alignment
-    st.markdown('<div class="button-container">', unsafe_allow_html=True)
-    if st.button(lang_dict["start"], key="start_button"):
-        st.session_state.page = "summarize"
-    st.markdown("</div>", unsafe_allow_html=True)
+    # Centered button using columns
+    col_center = st.columns([1, 2, 1])
+    with col_center[1]:
+        if st.button(lang_dict["start"], key="start_button"):
+            st.session_state.page = "summarize"
 
     # FAQ Section
     st.markdown("---")
