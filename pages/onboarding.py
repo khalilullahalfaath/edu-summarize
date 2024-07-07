@@ -12,19 +12,6 @@ def show_onboarding():
 
     lang_dict = load_bundle(lang_options[locale])
 
-    # try:
-    #     current_dir = os.path.dirname(os.path.abspath(__file__))
-    #     image_path = os.path.join(current_dir, "..", "static", "edu.png")
-
-    #     if os.path.exists(image_path):
-    #         st.markdown('<div class="hero-image-container">', unsafe_allow_html=True)
-    #         st.image(image_path, use_column_width=False, output_format="PNG", width=300)
-    #         st.markdown("</div>", unsafe_allow_html=True)
-    #     else:
-    #         st.warning("Hero image not found. Please check the file path.")
-    # except Exception as e:
-    #     st.error(f"Error loading image: {str(e)}")
-
     # Main content
     st.title(f"CaDas (Catatan Cerdas) 📚✏️")
     st.subheader(lang_dict["sub_title"])
