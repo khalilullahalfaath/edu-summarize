@@ -10,14 +10,6 @@ def main():
     if "page" not in st.session_state:
         st.session_state.page = "onboarding"
 
-    # Sidebar for navigation
-    with st.sidebar:
-        st.title("Navigation")
-        if st.button("Home"):
-            st.session_state.page = "onboarding"
-        if st.button("Summarize Notes"):
-            st.session_state.page = "summarize"
-
     # Display the appropriate page
     if st.session_state.page == "onboarding":
         show_onboarding()
