@@ -19,10 +19,6 @@ def show_onboarding():
             transition: background-color 0.3s ease;
         }
         
-        .button-container {
-            display: flex;
-            justify-content: flex-start;
-        }
         @media (max-width: 640px) {
             .button-container {
                 justify-content: center;
