@@ -5,27 +5,6 @@ import os
 
 
 def show_onboarding():
-    # Custom CSS (same as before)
-    st.markdown(
-        """
-    <style>
-        @media (max-width: 640px) {
-            .button-container {
-                justify-content: center;
-            }
-        }
-        .hero-image {
-            width: 100%;
-            max-width: 300px;
-            height: auto;
-            margin: 0 auto;
-            display: block;
-        }
-    </style>
-    """,
-        unsafe_allow_html=True,
-    )
-
     lang_options = {"English (US)": "en_US", "Bahasa Indonesia (ID)": "id_ID"}
 
     # Language selection
