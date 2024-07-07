@@ -18,9 +18,6 @@ def show_onboarding():
             padding: 15px 30px;
             transition: background-color 0.3s ease;
         }
-        h1, h2, h3 {
-            color: #3498DB;
-        }
         .stExpander {
             background-color: #E3F2FD;
             border-radius: 10px;
