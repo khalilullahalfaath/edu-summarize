@@ -5,51 +5,6 @@ import os
 
 
 def show_onboarding():
-    # Custom CSS (same as before)
-    st.markdown(
-        """
-    <style>
-        .stButton > button {
-            background-color: #4CAF50;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 10px;
-            padding: 15px 30px;
-            transition: background-color 0.3s ease;
-        }
-        .stButton > button:hover {
-            background-color: #45a049;
-            color: white !important;
-        }
-        h1, h2, h3 {
-            color: #3498DB;
-        }
-        .stExpander {
-            background-color: #E3F2FD;
-            border-radius: 10px;
-        }
-        .button-container {
-            display: flex;
-            justify-content: flex-start;
-        }
-        @media (max-width: 640px) {
-            .button-container {
-                justify-content: center;
-            }
-        }
-        .hero-image {
-            width: 100%;
-            max-width: 300px;
-            height: auto;
-            margin: 0 auto;
-            display: block;
-        }
-    </style>
-    """,
-        unsafe_allow_html=True,
-    )
-
     lang_options = {"English (US)": "en_US", "Bahasa Indonesia (ID)": "id_ID"}
 
     # Language selection
@@ -62,62 +17,46 @@ def show_onboarding():
         image_path = os.path.join(current_dir, "..", "static", "edu.png")
 
         if os.path.exists(image_path):
-            st.markdown('<div class="hero-image-container">', unsafe_allow_html=True)
-            st.image(image_path, use_column_width=False, output_format="PNG", width=300)
-            st.markdown("</div>", unsafe_allow_html=True)
+            st.image(image_path, use_column_width=True)
         else:
             st.warning("Hero image not found. Please check the file path.")
     except Exception as e:
         st.error(f"Error loading image: {str(e)}")
 
     # Main content
-    st.title(f"CaDas (Catatan Cerdas) 📚✏️")
+    st.title("CaDas (Catatan Cerdas) 📚✏️")
     st.subheader(lang_dict["sub_title"])
 
-    # Description in a colored box
-    st.markdown(
-        f"""
-    <div style="background-color: #E3F2FD; padding: 20px; border-radius: 10px;">
-        <p>{lang_dict["desc"]}</p>
-    </div>
-    """,
-        unsafe_allow_html=True,
-    )
+    # Description in a box
+    st.info(lang_dict["desc"])
 
-    # Features in two columns
+    # Features and Benefits in a single column
+    st.markdown(f"### {lang_dict['features_title']}")
+    features = [
+        lang_dict["feature_1"],
+        lang_dict["feature_2"],
+        lang_dict["feature_3"],
+        lang_dict["feature_4"],
+    ]
+    for feature in features:
+        st.markdown(f"- {feature}")
 
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown(f"### {lang_dict['features_title']}")
-        features = [
-            lang_dict["feature_1"],
-            lang_dict["feature_2"],
-            lang_dict["feature_3"],
-            lang_dict["feature_4"],
-        ]
-        for feature in features:
-            st.markdown(f"- {feature}")
-
-    with col2:
-        st.markdown(f"### {lang_dict['benefits_title']}")
-        benefits = [
-            lang_dict["benefits_1"],
-            lang_dict["benefits_2"],
-            lang_dict["benefits_3"],
-        ]
-        for benefit in benefits:
-            st.markdown(f"{benefit}")
+    st.markdown(f"### {lang_dict['benefits_title']}")
+    benefits = [
+        lang_dict["benefits_1"],
+        lang_dict["benefits_2"],
+        lang_dict["benefits_3"],
+    ]
+    for benefit in benefits:
+        st.markdown(f"- {benefit}")
 
     # Call to action
     st.markdown("---")
     st.markdown(f"## {lang_dict['ready']}")
 
-    # Button with custom alignment
-    st.markdown('<div class="button-container">', unsafe_allow_html=True)
+    # Centered button using Streamlit's layout
     if st.button(lang_dict["start"], key="start_button"):
         st.session_state.page = "summarize"
-    st.markdown("</div>", unsafe_allow_html=True)
 
     # FAQ Section
     st.markdown("---")
