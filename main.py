@@ -4,7 +4,7 @@ from pages import show_summarization
 
 
 def main():
-    st.set_page_config(page_title="NoteSum", page_icon="📚", layout="wide")
+    st.set_page_config(page_title="CaDas", page_icon="📚", layout="wide")
 
     # Initialize session state
     if "page" not in st.session_state:
