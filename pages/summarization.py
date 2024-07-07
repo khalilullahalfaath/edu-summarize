@@ -429,57 +429,58 @@ def show_summarization():
     if notes_text:
         col1, col2, col3 = st.columns(3)
 
-        with col1:
-            if st.button("Summarize / Ringkas"):
-                with st.spinner("Generating summary... / Menghasilkan ringkasan..."):
-                    summary = summarize_text(notes_text, subject)
-                st.write("Summary / Ringkasan:")
-                st.text_area("Summary / Ringkasan", summary, height=200)
-                st.download_button(
-                    label="Download summary / Unduh ringkasan",
-                    data=summary,
-                    file_name=f"{subject}_summary.txt",
-                    mime="text/plain",
-                )
+        summarize_button = col1.button("Summarize / Ringkas")
+        quiz_button = col2.button("Generate Quiz / Hasilkan Kuis")
+        flashcard_button = col3.button("Generate Flashcards / Hasilkan Kartu Flash")
 
-        with col2:
-            if st.button("Generate Quiz / Hasilkan Kuis"):
-                if notes_text.strip():
-                    with st.spinner("Generating quiz... / Menghasilkan kuis..."):
-                        st.session_state.quiz = generate_quiz(
-                            notes_text, language=language
-                        )
-                    st.experimental_rerun()
-                else:
-                    if language == "English":
-                        st.warning(
-                            "Please enter some text or upload an image with text content before generating a quiz."
-                        )
-                    else:
-                        st.warning(
-                            "Silakan masukkan beberapa teks atau unggah gambar dengan konten teks sebelum menghasilkan kuis."
-                        )
-        with col3:
-            if st.button("Generate Flashcards / Hasilkan Kartu Flash"):
-                if notes_text.strip():
-                    with st.spinner(
-                        "Generating flashcards... / Menghasilkan kartu flash..."
-                    ):
-                        st.session_state.flashcards = generate_flashcards(
-                            notes_text, language
-                        )
-                    st.success(
-                        "Flashcards generated successfully! / Kartu flash berhasil dibuat!"
+        # Move summary generation and display outside of columns
+        if summarize_button:
+            with st.spinner("Generating summary... / Menghasilkan ringkasan..."):
+                summary = summarize_text(notes_text, subject)
+            st.write("Summary / Ringkasan:")
+            st.text_area("", summary, height=200)
+            st.download_button(
+                label="Download summary / Unduh ringkasan",
+                data=summary,
+                file_name=f"{subject}_summary.txt",
+                mime="text/plain",
+            )
+
+        if quiz_button:
+            if notes_text.strip():
+                with st.spinner("Generating quiz... / Menghasilkan kuis..."):
+                    st.session_state.quiz = generate_quiz(notes_text, language=language)
+                st.experimental_rerun()
+            else:
+                if language == "English":
+                    st.warning(
+                        "Please enter some text or upload an image with text content before generating a quiz."
                     )
                 else:
-                    if language == "English":
-                        st.warning(
-                            "Please enter some text or upload an image with text content before generating flashcards."
-                        )
-                    else:
-                        st.warning(
-                            "Silakan masukkan beberapa teks atau unggah gambar dengan konten teks sebelum menghasilkan kartu flash."
-                        )
+                    st.warning(
+                        "Silakan masukkan beberapa teks atau unggah gambar dengan konten teks sebelum menghasilkan kuis."
+                    )
+
+        if flashcard_button:
+            if notes_text.strip():
+                with st.spinner(
+                    "Generating flashcards... / Menghasilkan kartu flash..."
+                ):
+                    st.session_state.flashcards = generate_flashcards(
+                        notes_text, language
+                    )
+                st.success(
+                    "Flashcards generated successfully! / Kartu flash berhasil dibuat!"
+                )
+            else:
+                if language == "English":
+                    st.warning(
+                        "Please enter some text or upload an image with text content before generating flashcards."
+                    )
+                else:
+                    st.warning(
+                        "Silakan masukkan beberapa teks atau unggah gambar dengan konten teks sebelum menghasilkan kartu flash."
+                    )
 
     if st.session_state.quiz:
         if language == "English":
