@@ -9,16 +9,6 @@ def show_onboarding():
     st.markdown(
         """
     <style>
-        .stButton > button {
-            background-color: #4CAF50;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 10px;
-            padding: 15px 30px;
-            transition: background-color 0.3s ease;
-        }
-        
         @media (max-width: 640px) {
             .button-container {
                 justify-content: center;
