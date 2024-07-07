@@ -18,10 +18,6 @@ def show_onboarding():
             padding: 15px 30px;
             transition: background-color 0.3s ease;
         }
-        .stButton > button:hover {
-            background-color: #45a049;
-            color: white !important;
-        }
         h1, h2, h3 {
             color: #3498DB;
         }
