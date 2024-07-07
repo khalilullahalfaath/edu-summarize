@@ -1,7 +1,6 @@
 import streamlit as st
 from utils.localizer import load_bundle
 
-
 def show_onboarding():
     lang_options = {"English (US)": "en_US", "Bahasa Indonesia (ID)": "id_ID"}
 
@@ -17,39 +16,33 @@ def show_onboarding():
     # Description in a box
     st.info(lang_dict["desc"])
 
-    # Features and Benefits in columns
-    col1, col2 = st.columns(2)
+    # Features and Benefits in a single column
+    st.markdown(f"### {lang_dict['features_title']}")
+    features = [
+        lang_dict["feature_1"],
+        lang_dict["feature_2"],
+        lang_dict["feature_3"],
+        lang_dict["feature_4"],
+    ]
+    for feature in features:
+        st.markdown(f"- {feature}")
 
-    with col1:
-        st.markdown(f"### {lang_dict['features_title']}")
-        features = [
-            lang_dict["feature_1"],
-            lang_dict["feature_2"],
-            lang_dict["feature_3"],
-            lang_dict["feature_4"],
-        ]
-        for feature in features:
-            st.markdown(f"- {feature}")
-
-    with col2:
-        st.markdown(f"### {lang_dict['benefits_title']}")
-        benefits = [
-            lang_dict["benefits_1"],
-            lang_dict["benefits_2"],
-            lang_dict["benefits_3"],
-        ]
-        for benefit in benefits:
-            st.markdown(f"- {benefit}")
+    st.markdown(f"### {lang_dict['benefits_title']}")
+    benefits = [
+        lang_dict["benefits_1"],
+        lang_dict["benefits_2"],
+        lang_dict["benefits_3"],
+    ]
+    for benefit in benefits:
+        st.markdown(f"- {benefit}")
 
     # Call to action
     st.markdown("---")
     st.markdown(f"## {lang_dict['ready']}")
 
-    # Centered button using columns
-    col_center = st.columns([1, 2, 1])
-    with col_center[1]:
-        if st.button(lang_dict["start"], key="start_button"):
-            st.session_state.page = "summarize"
+    # Centered button using a single column
+    if st.button(lang_dict["start"], key="start_button"):
+        st.session_state.page = "summarize"
 
     # FAQ Section
     st.markdown("---")
@@ -68,7 +61,6 @@ def show_onboarding():
 
         st.markdown(f"**{lang_dict['faq_5_q']}**")
         st.write(lang_dict["faq_5_a"])
-
 
 if __name__ == "__main__":
     show_onboarding()
