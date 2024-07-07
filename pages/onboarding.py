@@ -71,7 +71,7 @@ def show_onboarding():
         st.error(f"Error loading image: {str(e)}")
 
     # Main content
-    st.title(f"{lang_dict['title']} 📚✏️")
+    st.title(f"CaDas (Catatan Cerdas) 📚✏️")
     st.subheader(lang_dict["sub_title"])
 
     # Description in a colored box
@@ -84,14 +84,20 @@ def show_onboarding():
         unsafe_allow_html=True,
     )
 
-    # Steps and Benefits in two columns
+    # Features in two columns
+
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown(f"### {lang_dict['steps_title']}")
-        steps = [lang_dict["steps_1"], lang_dict["steps_2"], lang_dict["steps_3"]]
-        for i, step in enumerate(steps, 1):
-            st.markdown(f"**{i}.** {step}")
+        st.markdown(f"### {lang_dict['features_title']}")
+        features = [
+            lang_dict["feature_1"],
+            lang_dict["feature_2"],
+            lang_dict["feature_3"],
+            lang_dict["feature_4"],
+        ]
+        for feature in features:
+            st.markdown(f"- {feature}")
 
     with col2:
         st.markdown(f"### {lang_dict['benefits_title']}")
@@ -101,7 +107,7 @@ def show_onboarding():
             lang_dict["benefits_3"],
         ]
         for benefit in benefits:
-            st.markdown(f"- {benefit}")
+            st.markdown(f"{benefit}")
 
     # Call to action
     st.markdown("---")
@@ -109,14 +115,27 @@ def show_onboarding():
 
     # Button with custom alignment
     st.markdown('<div class="button-container">', unsafe_allow_html=True)
-    if st.button(lang_dict["summary"], key="start_button"):
+    if st.button(lang_dict["start"], key="start_button"):
         st.session_state.page = "summarize"
     st.markdown("</div>", unsafe_allow_html=True)
 
     # FAQ Section
     st.markdown("---")
     with st.expander(lang_dict["faq"]):
-        st.write("Your FAQ content here")
+        st.markdown(f"**{lang_dict['faq_1_q']}**")
+        st.write(lang_dict["faq_1_a"])
+
+        st.markdown(f"**{lang_dict['faq_2_q']}**")
+        st.write(lang_dict["faq_2_a"])
+
+        st.markdown(f"**{lang_dict['faq_3_q']}**")
+        st.write(lang_dict["faq_3_a"])
+
+        st.markdown(f"**{lang_dict['faq_4_q']}**")
+        st.write(lang_dict["faq_4_a"])
+
+        st.markdown(f"**{lang_dict['faq_5_q']}**")
+        st.write(lang_dict["faq_5_a"])
 
 
 if __name__ == "__main__":
