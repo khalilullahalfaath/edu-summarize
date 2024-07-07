@@ -18,10 +18,7 @@ def show_onboarding():
             padding: 15px 30px;
             transition: background-color 0.3s ease;
         }
-        .stExpander {
-            background-color: #E3F2FD;
-            border-radius: 10px;
-        }
+        
         .button-container {
             display: flex;
             justify-content: flex-start;
