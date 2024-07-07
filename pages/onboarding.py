@@ -5,6 +5,51 @@ import os
 
 
 def show_onboarding():
+    # Custom CSS (same as before)
+    st.markdown(
+        """
+    <style>
+        .stButton > button {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            padding: 15px 30px;
+            transition: background-color 0.3s ease;
+        }
+        .stButton > button:hover {
+            background-color: #45a049;
+            color: white !important;
+        }
+        h1, h2, h3 {
+            color: #3498DB;
+        }
+        .stExpander {
+            background-color: #E3F2FD;
+            border-radius: 10px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: flex-start;
+        }
+        @media (max-width: 640px) {
+            .button-container {
+                justify-content: center;
+            }
+        }
+        .hero-image {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+    </style>
+    """,
+        unsafe_allow_html=True,
+    )
+
     lang_options = {"English (US)": "en_US", "Bahasa Indonesia (ID)": "id_ID"}
 
     # Language selection
@@ -17,96 +62,80 @@ def show_onboarding():
         image_path = os.path.join(current_dir, "..", "static", "edu.png")
 
         if os.path.exists(image_path):
-            st.image(image_path, use_column_width=True)
+            st.markdown('<div class="hero-image-container">', unsafe_allow_html=True)
+            st.image(image_path, use_column_width=False, output_format="PNG", width=300)
+            st.markdown("</div>", unsafe_allow_html=True)
         else:
             st.warning("Hero image not found. Please check the file path.")
     except Exception as e:
         st.error(f"Error loading image: {str(e)}")
 
     # Main content
-    st.title("CaDas (Catatan Cerdas) 📚✏️")
+    st.title(f"CaDas (Catatan Cerdas) 📚✏️")
+    st.subheader(lang_dict["sub_title"])
 
-    if "sub_title" in lang_dict:
-        st.subheader(lang_dict["sub_title"])
-    else:
-        st.warning("Subtitle key not found in language dictionary.")
+    # Description in a colored box
+    st.markdown(
+        f"""
+    <div style="background-color: #E3F2FD; padding: 20px; border-radius: 10px;">
+        <p>{lang_dict["desc"]}</p>
+    </div>
+    """,
+        unsafe_allow_html=True,
+    )
 
-    if "desc" in lang_dict:
-        st.info(lang_dict["desc"])
-    else:
-        st.warning("Description key not found in language dictionary.")
+    # Features in two columns
 
-    # Features and Benefits in a single column
-    if "features_title" in lang_dict:
+    col1, col2 = st.columns(2)
+
+    with col1:
         st.markdown(f"### {lang_dict['features_title']}")
         features = [
-            lang_dict.get("feature_1", "Feature 1 not found"),
-            lang_dict.get("feature_2", "Feature 2 not found"),
-            lang_dict.get("feature_3", "Feature 3 not found"),
-            lang_dict.get("feature_4", "Feature 4 not found"),
+            lang_dict["feature_1"],
+            lang_dict["feature_2"],
+            lang_dict["feature_3"],
+            lang_dict["feature_4"],
         ]
         for feature in features:
             st.markdown(f"- {feature}")
-    else:
-        st.warning("Features title key not found in language dictionary.")
 
-    if "benefits_title" in lang_dict:
+    with col2:
         st.markdown(f"### {lang_dict['benefits_title']}")
         benefits = [
-            lang_dict.get("benefits_1", "Benefit 1 not found"),
-            lang_dict.get("benefits_2", "Benefit 2 not found"),
-            lang_dict.get("benefits_3", "Benefit 3 not found"),
+            lang_dict["benefits_1"],
+            lang_dict["benefits_2"],
+            lang_dict["benefits_3"],
         ]
         for benefit in benefits:
-            st.markdown(f"- {benefit}")
-    else:
-        st.warning("Benefits title key not found in language dictionary.")
+            st.markdown(f"{benefit}")
 
     # Call to action
     st.markdown("---")
+    st.markdown(f"## {lang_dict['ready']}")
 
-    if "ready" in lang_dict:
-        st.markdown(f"## {lang_dict['ready']}")
-    else:
-        st.warning("Ready key not found in language dictionary.")
-
-    # Centered button using Streamlit's layout
-    if "start" in lang_dict:
-        if st.button(lang_dict["start"], key="start_button"):
-            st.session_state.page = "summarize"
-    else:
-        st.warning("Start key not found in language dictionary.")
+    # Button with custom alignment
+    st.markdown('<div class="button-container">', unsafe_allow_html=True)
+    if st.button(lang_dict["start"], key="start_button"):
+        st.session_state.page = "summarize"
+    st.markdown("</div>", unsafe_allow_html=True)
 
     # FAQ Section
     st.markdown("---")
+    with st.expander(lang_dict["faq"]):
+        st.markdown(f"**{lang_dict['faq_1_q']}**")
+        st.write(lang_dict["faq_1_a"])
 
-    if "faq" in lang_dict:
-        with st.expander(lang_dict["faq"]):
-            faq_questions = [
-                "faq_1_q",
-                "faq_2_q",
-                "faq_3_q",
-                "faq_4_q",
-                "faq_5_q",
-            ]
-            faq_answers = [
-                "faq_1_a",
-                "faq_2_a",
-                "faq_3_a",
-                "faq_4_a",
-                "faq_5_a",
-            ]
+        st.markdown(f"**{lang_dict['faq_2_q']}**")
+        st.write(lang_dict["faq_2_a"])
 
-            for q, a in zip(faq_questions, faq_answers):
-                if q in lang_dict and a in lang_dict:
-                    st.markdown(f"**{lang_dict[q]}**")
-                    st.write(lang_dict[a])
-                else:
-                    st.warning(
-                        f"FAQ key '{q}' or '{a}' not found in language dictionary."
-                    )
-    else:
-        st.warning("FAQ key not found in language dictionary.")
+        st.markdown(f"**{lang_dict['faq_3_q']}**")
+        st.write(lang_dict["faq_3_a"])
+
+        st.markdown(f"**{lang_dict['faq_4_q']}**")
+        st.write(lang_dict["faq_4_a"])
+
+        st.markdown(f"**{lang_dict['faq_5_q']}**")
+        st.write(lang_dict["faq_5_a"])
 
 
 if __name__ == "__main__":
