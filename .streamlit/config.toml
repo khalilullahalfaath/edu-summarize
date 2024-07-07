@@ -1,0 +1,13 @@
+[theme]
+primaryColor = "#FF6B6B"             # A vibrant coral red
+backgroundColor = "#F7F7F7"          # A very light gray, almost white
+secondaryBackgroundColor = "#E3F2FD" # A soft, light blue
+textColor = "#2C3E50"                # A deep blue-gray
+font = "sans serif"
+
+[server]
+runOnSave = true
+enableStaticServing = true
+
+[browser]
+gatherUsageStats = false
