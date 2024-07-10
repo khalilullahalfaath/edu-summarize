@@ -12,7 +12,6 @@ from azure.core.credentials import AzureKeyCredential
 import openai
 import pandas as pd
 import plotly.express as px
-import pyodbc
 
 # Load environment variables
 load_dotenv(override=True)
@@ -22,12 +21,6 @@ AZURE_ENDPOINT = os.getenv("AZURE_ENDPOINT")
 AZURE_API_KEY = os.getenv("AZURE_API_KEY")
 
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-# Azure SQL Database configuration
-SQL_SERVER = os.getenv("SQL_SERVER")
-SQL_DATABASE = os.getenv("SQL_DATABASE")
-SQL_USERNAME = os.getenv("SQL_USERNAME")
-SQL_PASSWORD = os.getenv("SQL_PASSWORD")
 
 # Initialize services
 text_analytics_client = TextAnalyticsClient(
@@ -42,276 +35,6 @@ if "quiz_submitted" not in st.session_state:
     st.session_state.quiz_submitted = False
 if "reset" not in st.session_state:
     st.session_state.reset = False
-
-
-# database
-@st.cache_resource
-def init_connection():
-    conn_str = (
-        f"DRIVER={{ODBC Driver 17 for SQL Server}};"
-        f"SERVER={SQL_SERVER};"
-        f"DATABASE={SQL_DATABASE};"
-        f"UID={SQL_USERNAME};"
-        f"PWD={SQL_PASSWORD}"
-    )
-    return pyodbc.connect(conn_str)
-
-
-conn = init_connection()
-
-
-@st.cache_data(ttl=600)
-def add_user_to_db(nama_user, jenjang):
-
-    if is_user_exist(nama_user, jenjang) == False:
-
-        with conn.cursor() as cursor:
-
-            cursor.execute("INSERT INTO users VALUES (?, ?);", nama_user, jenjang)
-
-            conn.commit()
-
-
-@st.cache_data(ttl=600)
-def add_catatan_to_db(catatan, id_mapel):
-
-    with conn.cursor() as cursor:
-
-        cursor.execute("INSERT INTO catatan VALUES (?, ?);", catatan, id_mapel)
-
-        conn.commit()
-
-
-@st.cache_data(ttl=600)
-def add_mapel_to_db(mapel, nama, jenjang, id_user):
-
-    with conn.cursor() as cursor:
-
-        cursor.execute(
-            "INSERT INTO mata_pelajaran VALUES (?, ?, ?, ?);",
-            mapel,
-            nama,
-            jenjang,
-            id_user,
-        )
-
-        conn.commit()
-
-
-@st.cache_data(ttl=600)
-def add_pertanyaan_to_db(nomor, pertanyaan, id_catatan):
-
-    if is_pertanyaan_exist(pertanyaan) == False:
-
-        with conn.cursor() as cursor:
-
-            cursor.execute(
-                "INSERT INTO pertanyaan VALUES (?, ?, ?);",
-                nomor,
-                pertanyaan,
-                id_catatan,
-            )
-
-            conn.commit()
-
-
-@st.cache_data(ttl=600)
-def add_parameter_to_db(nomor, parameter, correct_score, total_score, id_pertanyaan):
-
-    with conn.cursor() as cursor:
-
-        cursor.execute(
-            "INSERT INTO parameter_analisis VALUES (?, ?, ?, ?, ?);",
-            nomor,
-            parameter,
-            correct_score,
-            total_score,
-            id_pertanyaan,
-        )
-
-        conn.commit()
-
-
-@st.cache_data(ttl=600)
-def add_skor_to_db(category, skor, keterangan, id_user):
-
-    with conn.cursor() as cursor:
-
-        cursor.execute(
-            "INSERT INTO score VALUES (?, ?, ?, ?);",
-            category,
-            skor,
-            keterangan,
-            id_user,
-        )
-
-        conn.commit()
-
-
-@st.cache_data(ttl=600)
-def add_ringkasan_to_db(ringkasan, id_catatan):
-
-    with conn.cursor() as cursor:
-
-        cursor.execute("INSERT INTO ringkasan VALUES (?, ?);", ringkasan, id_catatan)
-
-        conn.commit()
-
-
-@st.cache_data(ttl=600)
-def is_catatan_exist(catatan):
-
-    with conn.cursor() as cursor:
-
-        cursor.execute(f"SELECT notes FROM catatan WHERE notes = '{catatan}'")
-
-        result = cursor.fetchone()
-
-        if result:
-
-            return True
-
-        else:
-
-            return False
-
-
-@st.cache_data(ttl=600)
-def is_user_exist(nama_user, jenjang):
-
-    with conn.cursor() as cursor:
-
-        cursor.execute(
-            "SELECT nama_user, jenjang_pendidikan FROM users WHERE nama_user = ? AND jenjang_pendidikan = ?",
-            (nama_user, jenjang),
-        )
-
-        result = cursor.fetchone()
-
-        if result:
-
-            return True
-
-        else:
-
-            return False
-
-
-@st.cache_data(ttl=600)
-def is_pertanyaan_exist(pertanyaan):
-
-    with conn.cursor() as cursor:
-
-        cursor.execute(f"SELECT soal FROM pertanyaan WHERE soal = '{pertanyaan}'")
-
-        result = cursor.fetchone()
-
-        if result:
-
-            return True
-
-        else:
-
-            return False
-
-
-@st.cache_data(ttl=600)
-def get_user_id(nama_user, jenjang):
-
-    with conn.cursor() as cursor:
-
-        cursor.execute(
-            f"SELECT id_user FROM users WHERE nama_user = '{nama_user}' AND jenjang_pendidikan = '{jenjang}'"
-        )
-
-        row = cursor.fetchone()
-
-        if row:
-
-            return row[0]
-
-        else:
-
-            return None
-
-
-@st.cache_data(ttl=600)
-def get_mapel_id(mapel, nama, jenjang):
-
-    with conn.cursor() as cursor:
-
-        cursor.execute(
-            f"SELECT id_mapel FROM mata_pelajaran WHERE mapel = ? AND username = ? AND jenjang = ?",
-            mapel,
-            nama,
-            jenjang,
-        )
-
-        row = cursor.fetchone()
-
-        if row:
-
-            return row[0]
-
-        else:
-
-            return None
-
-
-@st.cache_data(ttl=600)
-def get_catatan_id(catatan):
-
-    with conn.cursor() as cursor:
-
-        cursor.execute(f"SELECT id_notes FROM catatan WHERE notes = '{catatan}'")
-
-        row = cursor.fetchone()
-
-        if row:
-
-            return row[0]
-
-        else:
-
-            return None
-
-
-@st.cache_data(ttl=600)
-def get_pertanyaan_id(pertanyaan):
-
-    with conn.cursor() as cursor:
-
-        cursor.execute(f"SELECT id_soal FROM pertanyaan WHERE soal = '{pertanyaan}'")
-
-        row = cursor.fetchone()
-
-        if row:
-
-            return row[0]
-
-        else:
-
-            return None
-
-
-@st.cache_data(ttl=600)
-def get_parameter_id(parameter, skor_parameter, id_pertanyaan):
-
-    with conn.cursor() as cursor:
-
-        cursor.execute(
-            f"SELECT id_parameter FROM parameter_analisis WHERE parameter = '{parameter}' AND skor_parameter = {skor_parameter} AND id_pertanyaan = {id_pertanyaan}'"
-        )
-
-        row = cursor.fetchone()
-
-        if row:
-
-            return row[0]
-
-        else:
-
-            return None
 
 
 def timer_decorator(func):
@@ -516,7 +239,7 @@ def get_rating(percentage, language):
         return ratings[5]
 
 
-def generate_evaluation(quiz, id_user, language="English"):
+def generate_evaluation(quiz, language="English"):
     if language == "English":
         skill_categories = {
             "MI": "Main Idea Comprehension",
@@ -557,10 +280,8 @@ def generate_evaluation(quiz, id_user, language="English"):
     for category, scores in skill_scores.items():
         if scores["total"] > 0:
             percentage = (scores["correct"] / scores["total"]) * 100
-            rating = get_rating(percentage, language)
-            evaluation += f"{category}: {percentage:.2f}% - {rating}\n"
-            add_skor_to_db(
-                category, percentage, rating.split("(", 1)[0].strip(), id_user.get("id")
+            evaluation += (
+                f"{category}: {percentage:.2f}% - {get_rating(percentage, language)}\n"
             )
         else:
             evaluation += f"{category}: N/A (no questions in this category)\n"
@@ -647,29 +368,7 @@ def generate_flashcards(notes, language="English"):
 
 
 def show_summarization():
-    id_user = {}
-    id_mapel = {}
-    id_catatan = {}
-    id_pertanyaan = {}
-    pertanyaan = {}
-
     st.title("NoteSum - Note Summarization and Quiz Generator")
-
-    jenjang = st.selectbox(
-        "Choose your level of Education / Pilih jenjang pendidikan Anda:",
-        ["SD", "SMP", "SMA", "Perguruan Tinggi"],
-    )
-
-    nama_user = st.text_input("Enter your username / Masukkan nama pengguna Anda :")
-
-    if not nama_user:
-        st.warning("Please enter username / Harap masukan nama pengguna")
-        if is_user_exist(nama_user, jenjang):
-            st.warning(
-                "Username and jenjang already exist / Username dan jenjang sudah ada"
-            )
-
-    st.session_state.reset = None
 
     # Check if reset is requested
     if st.session_state.reset:
@@ -693,11 +392,9 @@ def show_summarization():
             "Input text directly / Masukkan teks langsung",
         ),
     )
-
     subject = st.selectbox(
         "Select your subject / Pilih mata pelajaran",
         [
-            "Select subject / Pilih mata pelajaran",
             "Math / Matematika",
             "Science / IPA",
             "History / Sejarah",
@@ -705,12 +402,6 @@ def show_summarization():
             "Other / Lainnya",
         ],
     )
-
-    if subject == "Select subject / Pilih mata pelajaran":
-
-        st.warning(
-            "Please select a subject in advance / Harap pilih mata pelajaran terlebih dahulu"
-        )
 
     notes_text = ""
     if input_method == "Upload image for OCR / Unggah gambar untuk OCR":
@@ -736,30 +427,6 @@ def show_summarization():
         )
 
     if notes_text:
-        if is_catatan_exist(notes_text) == False:
-
-            if nama_user:
-                add_user_to_db(nama_user, jenjang)
-
-            else:
-                st.warning("Please enter username / Harap masukan nama pengguna")
-
-            if subject == "Select subject / Pilih mata pelajaran":
-                st.warning(
-                    "Please select a subject in advance / Harap pilih mata pelajaran terlebih dahulu"
-                )
-
-            else:
-                id_user["id"] = get_user_id(nama_user, jenjang)
-
-                add_mapel_to_db(subject, nama_user, jenjang, id_user.get("id"))
-
-                id_mapel["id"] = get_mapel_id(subject, nama_user, jenjang)
-
-                subject = None
-
-                add_catatan_to_db(notes_text, id_mapel.get("id"))
-
         col1, col2, col3 = st.columns(3)
 
         summarize_button = col1.button("Summarize / Ringkas")
@@ -770,8 +437,6 @@ def show_summarization():
         if summarize_button:
             with st.spinner("Generating summary... / Menghasilkan ringkasan..."):
                 summary = summarize_text(notes_text, subject)
-
-                add_ringkasan_to_db(summary, id_catatan.get("id"))
             st.write("Summary / Ringkasan:")
             st.text_area("", summary, height=200)
             st.download_button(
@@ -825,14 +490,6 @@ def show_summarization():
 
         for i, q in enumerate(st.session_state.quiz):
             st.write(f"Q{i+1}: {q['question']}")
-
-            pertanyaan["soal"] = q["question"]
-
-            id_catatan["id"] = get_catatan_id(notes_text)
-
-            add_pertanyaan_to_db(i + 1, pertanyaan.get("soal"), id_catatan.get("id"))
-
-            pertanyaan["soal"] = None
             options = q.get("options", [])
             if not options:
                 st.error(
@@ -880,9 +537,8 @@ def show_summarization():
                 f"Anda menjawab benar {correct_answers} dari {total_questions} pertanyaan."
             )
 
-        id_user["id"] = get_user_id(nama_user, jenjang)
-
-        evaluation = generate_evaluation(st.session_state.quiz, id_user, language)
+        evaluation = generate_evaluation(st.session_state.quiz, language)
+        st.write(evaluation)
 
         # Create a dataframe for the skill scores
         skill_categories = (
@@ -912,40 +568,6 @@ def show_summarization():
             if q["user_answer"] == q["correct_answer"]:
                 skill_scores[category]["correct"] += 1
 
-        skill = {}
-
-        for i, q in enumerate(st.session_state.quiz):
-
-            type_category = skill_categories[q["question_type"]]
-
-            if type_category not in skill:
-
-                skill[type_category] = {"correct": 0, "total": 0}
-
-            # Set total to 1 if the type_category exists in skill_categories, else 0
-
-            skill[type_category]["total"] = (
-                1 if q["question_type"] in skill_categories else 0
-            )
-
-            # Set correct to 1 if user_answer matches correct_answer, else 0
-
-            skill[type_category]["correct"] = (
-                1 if q["user_answer"] == q["correct_answer"] else 0
-            )
-
-            id_pertanyaan["id"] = get_pertanyaan_id(
-                q["question"]
-            )  # Assuming get_pertanyaan_id gets the id for the question
-
-            add_parameter_to_db(
-                i + 1,
-                type_category,
-                skill[type_category]["correct"],
-                skill[type_category]["total"],
-                id_pertanyaan.get("id"),
-            )
-
         df_scores = pd.DataFrame(
             [
                 {
@@ -971,12 +593,12 @@ def show_summarization():
         strengths = [
             category
             for category, scores in skill_scores.items()
-            if scores["total"] > 0 and (scores["correct"] / scores["total"]) * 100 >= 80
+            if (scores["correct"] / scores["total"]) * 100 >= 80
         ]
         weaknesses = [
             category
             for category, scores in skill_scores.items()
-            if scores["total"] > 0 and (scores["correct"] / scores["total"]) * 100 < 40
+            if (scores["correct"] / scores["total"]) * 100 < 40
         ]
 
         if language == "English":
