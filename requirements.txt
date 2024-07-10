@@ -7,3 +7,4 @@ azure-ai-textanalytics==5.3.0
 openai
 pandas
 plotly
+pyodbc
